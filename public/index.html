@@ -10,37 +10,163 @@
 		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
 
 		app.onInit = function(){
+			var canvas = document.getElementById("canvas");
+			canvas.width = window.innerWidth - 21;
+			canvas.height = window.innerHeight - 21;
+			app.height = canvas.height;
+			app.width = canvas.width;
+
 			this.nodes.push({
-				id : 'red-box',
-				x  : 100,
-				y  : 0,
-				width  : 100,
-				height : 100,
+				id : 'player1',
+				x  : app.width/12,
+				y  : app.height/2,
+				width  : app.width/80,
+				height : app.height/6,
 				color  : 'red',
-				direction : 0
+				score  : 0
 			});
 
 			this.nodes.push({
-				id : 'black-box',
-				x  : 50,
-				y  : 0,
-				width  : 150,
-				height : 150,
-				color  : 'black'
+				id : 'player2',
+				x  : app.width - app.width/12,
+				y  : app.height/2,
+				width  : app.width/80,
+				height : app.height/6,
+				color  : 'blue',
+				score  : 0
+			});
+
+			this.nodes.push({
+				id : 'ball',
+				x : app.width/2,
+				y : app.height/2,
+				width : 0,
+				height : 0,
+				radius : app.width/80,
+				color : 'white',
+				directionX : 0,
+				directionY : 0,
+				potentialX : Math.abs(Math.random())*app.width/821 + app.width/612,
+				potentialY : Math.abs(Math.random())*app.width/821 + app.width/730,
+				bouce : false
+			});
+
+			document.addEventListener('keydown', (keyboardEvent) => {
+				if(keyboardEvent.key === 's') {
+					this.getNode('player1').y += app.height/50;
+				}
+				if(keyboardEvent.key === 'w') {
+					this.getNode('player1').y -= app.height/50;
+				}
+
+				if(keyboardEvent.key === 'ArrowUp') {
+					this.getNode('player2').y -= app.height/50;
+				}
+				if(keyboardEvent.key === 'ArrowDown') {
+					this.getNode('player2').y += app.height/50;
+				}
+
+				if(keyboardEvent.key === ' ') {
+					if(this.getNode('ball').potentialX == 0) {
+						this.pause(false);
+					}
+					else {
+						if(this.getNode('ball').color == 'white') {
+							this.getNode('ball').color = 'black'
+						}
+						this.pause(true);
+					}
+				}
+
+				if(keyboardEvent.key === 'r') {
+					this.reset();
+				}
 			});
 		};
 
 		app.onUpdate = function(time){
-			this.getNode('black-box').y++;
-
-			if(Math.cos(this.timestamp / 100) > 0){
-				this.getNode('red-box').direction = -1;
-			}else{
-				this.getNode('red-box').direction = 1;
+			var ball = this.getNode('ball');
+			if (ball.x < (this.getNode('player1').x + app.width/40)) {
+				if (ball.bouce == false) {
+					if (ball.y >= this.getNode('player1').y && ball.y <= (this.getNode('player1').y + app.height/6)) {
+						ball.directionX = - ball.directionX;
+						ball.bouce = true;
+					}
+					else {
+						this.getNode('player2').score++;
+						this.showScore();
+						this.reset();
+					}
+				}
 			}
-
-			this.getNode('red-box').x+=this.getNode('red-box').direction;
+			else if (ball.x > (this.getNode('player2').x - app.width/80)) {
+				if (ball.bouce == false) {
+					if (ball.y >= this.getNode('player2').y && ball.y <= (this.getNode('player2').y + app.height/6)) {
+						ball.directionX = - ball.directionX;
+						ball.bouce = true;
+					}
+					else {
+						this.getNode('player1').score++;
+						this.showScore();
+						this.reset();
+					}
+				}
+			}
+			else if (ball.y < app.width/100 || ball.y > (app.height - app.width/80)) {
+				if (ball.bouce == false) {
+					ball.directionY = - ball.directionY;
+					ball.bouce = true;
+				}
+			}
+			else {
+				ball.bouce = false;
+			}
+			ball.x += ball.directionX;
+			ball.y += ball.directionY;
+			this.drawBall();
 		};
+
+		app.pause = function(isPause){
+			var ball = this.getNode('ball');
+			if(isPause) {
+				ball.directionX = ball.potentialX;
+				ball.directionY = ball.potentialY;
+				ball.potentialX = 0;
+				ball.potentialY = 0;
+			}
+			else {
+				ball.potentialX = ball.directionX;
+				ball.potentialY = ball.directionY;
+				ball.directionX = 0;
+				ball.directionY = 0;
+			}
+		}
+
+		app.reset = function(){
+			var ball = this.getNode('ball');
+			ball.x = app.width/2;
+			ball.y = app.height/2;
+			ball.directionX = 0;
+			ball.directionY = 0;
+			ball.potentialX = Math.random()*2;
+			ball.potentialY = Math.random();
+			ball.bouce = false;
+		};
+
+		app.showScore = function(){
+			console.log('player 1 score: ', parseFloat(this.getNode('player1').score));
+			console.log('player 2 score: ', parseFloat(this.getNode('player2').score));
+		}
+
+		app.drawBall = function(){
+			var ball = this.getNode('ball');
+			ctx.beginPath();
+			ctx.arc(ball.x,ball.y,ball.radius,0,Math.PI*2);
+			ctx.fillStyle = ball.color;
+			ctx.fill();
+			ctx.strokeStyle = '#ffffff';
+			ctx.stroke();
+		}
 	</script>
 </body>
 </html>

@@ -39,7 +39,8 @@
 				y  : app.height/2,
 				width  : 10,
 				height : 126,
-				color  : 'red'
+				color  : 'red',
+				score  : 0
 			});
 
 			this.nodes.push({
@@ -48,7 +49,8 @@
 				y  : app.height/2,
 				width  : 10,
 				height : 126,
-				color  : 'blue'
+				color  : 'blue',
+				score  : 0
 			});
 
 			var player1 = this.getNode('player1');
@@ -83,15 +85,6 @@
 				vecY : 0,
 				potX : (Math.random()-0.5) * 6,
 				potY : (Math.random()-0.5) * 3,
-			});
-			this.drawBall();
-
-			var ball = this.getNode('ball');
-			window.addEventListener('keydown', (event) => {
-				if(event.key === ' ') {
-					console.log(parseFloat(ball.vecX));
-					this.pause(ball.vecX == 0);
-				}
 			});
 		}
 
@@ -131,6 +124,16 @@
 			}
 		}
 
+		app.showScore = function(){
+			this.reset();
+			console.log('Player 1 score: ', parseFloat(this.getNode('player1').score));
+			console.log('Player 2 score: ', parseFloat(this.getNode('player2').score));
+		}
+
+		app.reset = function(){
+			this.deleteNode('ball');
+		}
+
 		app.hasNode = function(id){
 			return (app.getNode(id).x != null);
 		}
@@ -143,8 +146,17 @@
 			});
 
 			window.addEventListener('keydown', (event) => {
-				if(!this.hasNode('ball') && event.key === ' ') {
-					this.addBall();
+				if(event.key === ' ') {
+					if(this.hasNode('ball')){
+						this.pause(this.getNode('ball').vecX == 0);
+					}
+					else {
+						this.addBall();
+					}
+				}
+
+				if(event.key === 'r') {
+					this.reset();
 				}
 			});
 		};
@@ -160,6 +172,15 @@
 			else if ( ((ball.x - ball.radius) <= (player1.x + player1.width) && ball.y >= player1.y && ball.y <= (player1.y + player1.height)) 
 					|| ((ball.x + ball.radius) >= player2.x && ball.y >= player2.y && ball.y <= (player2.y + player2.height)) ) {
 				ball.vecX = - ball.vecX;
+			}
+
+			if(ball.x < 0) {
+				player2.score++;
+				this.showScore();
+			}
+			else if (ball.x > app.width) {
+				player1.score++;
+				this.showScore();
 			}
 			ball.x += ball.vecX;
 			ball.y += ball.vecY;

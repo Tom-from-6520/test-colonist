@@ -28,6 +28,8 @@
 			app.width = canvas.width;
 			app.height = canvas.height;
 
+			this.deleteNode('player1');
+			this.deleteNode('player2');
 			this.addPlayers();
 		}
 
@@ -60,7 +62,6 @@
 				if(event.key === 's' && (player1.y + player1.height) < app.height) {
 					player1.y += player1.height/8;
 				}
-
 				if(event.key === 'ArrowUp' && player2.y > 0) {
 					player2.y -= player2.height/8;
 				}
@@ -70,10 +71,21 @@
 			});
 		}
 
+		app.deleteNode = function(id) {
+			for(var i = 0; i < this.nodes.length; i++) {
+				if(app.nodes[i].id === id) {
+					app.nodes.splice(i);
+					break;
+				}
+			}
+		}
+
 		app.onInit = function(){
 			this.resizeScreen();
 
-
+			window.addEventListener('resize', () => {
+				this.resizeScreen();
+			});
 		};
 
 		app.onUpdate = function(time){

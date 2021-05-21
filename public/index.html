@@ -125,9 +125,10 @@
 		}
 
 		app.showScore = function(){
-			this.reset();
-			console.log('Player 1 score: ', parseFloat(this.getNode('player1').score));
-			console.log('Player 2 score: ', parseFloat(this.getNode('player2').score));
+			var ctx = document.getElementById('canvas').getContext('2d');
+			ctx.font = "30px Arial";
+			ctx.fillText(parseFloat(this.getNode('player1').score), app.width/4, 42);
+			ctx.fillText(parseFloat(this.getNode('player2').score), app.width*3/4, 42);
 		}
 
 		app.reset = function(){
@@ -176,15 +177,16 @@
 
 			if(ball.x < 0) {
 				player2.score++;
-				this.showScore();
+				this.reset();
 			}
 			else if (ball.x > app.width) {
 				player1.score++;
-				this.showScore();
+				this.reset();
 			}
 			ball.x += ball.vecX;
 			ball.y += ball.vecY;
 			this.drawBall();
+			this.showScore();
 		};
 	</script>
 </body>

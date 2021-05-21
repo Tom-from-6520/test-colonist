@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html>
+<style>
+	html {
+		width: 100%;
+		height: 100%;
+	}
+
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>
 <head>
 	<title>Ping Pong Game</title>
 </head>
@@ -9,7 +21,17 @@
 	<script type="text/javascript">
 		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
 
+		app.resizeScreen = function(){
+			var canvas = document.getElementById('canvas');
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			app.width = canvas.width;
+			app.height = canvas.height;
+		}
+
 		app.onInit = function(){
+			this.resizeScreen();
+			
 			this.nodes.push({
 				id : 'red-box',
 				x  : 100,

@@ -42,7 +42,8 @@
 				width  : 15,
 				height : 100,
 				color  : 'red',
-				score  : 0
+				score  : 0,
+				speed  : 0
 			});
 
 			this.nodes.push({
@@ -52,7 +53,8 @@
 				width  : 15,
 				height : 100,
 				color  : 'blue',
-				score  : 0
+				score  : 0,
+				speed  : 0
 			});
 
 			var player1 = this.getNode('player1');
@@ -60,16 +62,31 @@
 
 			window.addEventListener('keydown', (event) => {
 				if(event.key === 'w' && player1.y >= 0) {
-					player1.y -= player1.height/6;
+					player1.speed = - player1.height/10;
 				}
 				if(event.key === 's' && (player1.y + player1.height) <= app.height) {
-					player1.y += player1.height/6;
+					player1.speed = player1.height/10;
 				}
 				if(event.key === 'ArrowUp' && player2.y >= 0) {
-					player2.y -= player2.height/6;
+					player2.speed = - player2.height/10;
 				}
 				if(event.key === 'ArrowDown' && (player2.y + player2.height) <= app.height) {
-					player2.y += player2.height/6;
+					player2.speed = player2.height/10;
+				}
+			});
+
+			window.addEventListener('keyup', (event) => {
+				if(event.key === 'w') {
+					player1.speed = 0;
+				}
+				if(event.key === 's') {
+					player1.speed = 0;
+				}
+				if(event.key === 'ArrowUp') {
+					player2.speed = 0;
+				}
+				if(event.key === 'ArrowDown') {
+					player2.speed = 0;
 				}
 			});
 		}
@@ -190,6 +207,10 @@
 			}
 			ball.x += ball.vecX;
 			ball.y += ball.vecY;
+
+			player1.y += player1.speed;
+			player2.y += player2.speed;
+
 			this.drawBall();
 			this.showScore();
 		};

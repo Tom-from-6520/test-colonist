@@ -103,6 +103,7 @@
 				color : 'black',
 				vecX : speed * Math.cos(angle),
 				vecY : speed * Math.sin(angle),
+				mul  : 1,
 				potX : 0,
 				potY : 0,
 			});
@@ -137,6 +138,21 @@
 			}
 			else {
 				this.getNode('ball').color = 'black';
+			}
+		}
+
+		app.changeBallSpeed = function(time){
+			const ball = this.getNode('ball');
+			const pause = 126;
+			const duration = 548;
+			var t = Math.floor((time-pause)/duration);
+			if( (t % duration) > duration/2 ) {
+				ball.mul = 1.07;
+				ball.radius = 15;
+			}
+			else {
+				ball.mul = 1;
+				ball.radius = 10;
 			}
 		}
 
@@ -207,6 +223,8 @@
 			else if ( ((ball.x - ball.radius) <= (player1.x + player1.width) && ball.y >= player1.y && ball.y <= (player1.y + player1.height)) 
 					|| ((ball.x + ball.radius) >= player2.x && ball.y >= player2.y && ball.y <= (player2.y + player2.height)) ) {
 				ball.vecX = - ball.vecX;
+				ball.vecX *= ball.mul;
+				ball.vecY *= ball.mul;
 			}
 
 			if(ball.x < 0) {
@@ -220,6 +238,7 @@
 			ball.x += ball.vecX;
 			ball.y += ball.vecY;
 			this.changeBallColor(this.timestamp);
+			this.changeBallSpeed(this.timestamp);
 
 			player1.y += player1.speed;
 			player2.y += player2.speed;

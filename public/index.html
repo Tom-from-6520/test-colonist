@@ -36,7 +36,7 @@
 		app.addPlayers = function(){
 			this.nodes.push({
 				id : 'player1',
-				x  : 100,
+				x  : 54,
 				y  : app.height/2,
 				shape  : 'rect',
 				width  : 15,
@@ -47,7 +47,7 @@
 
 			this.nodes.push({
 				id : 'player2',
-				x  : (app.width-100),
+				x  : (app.width-54),
 				y  : app.height/2,
 				shape  : 'rect',
 				width  : 15,
@@ -189,6 +189,29 @@
 			return (app.getNode(id).x != null);
 		}
 
+		app.bounceBall = function(ball, player1, player2){
+			if ((ball.y - ball.radius) < 0 || (ball.y + ball.radius) > app.height) {
+				ball.vecY = - ball.vecY;
+			}
+			else if ( ((ball.x - ball.radius) <= (player1.x + player1.width) && ball.y >= player1.y && ball.y <= (player1.y + player1.height)) 
+					|| ((ball.x + ball.radius) >= player2.x && ball.y >= player2.y && ball.y <= (player2.y + player2.height)) ) {
+				ball.vecX = - ball.vecX;
+				ball.vecX *= ball.mul;
+				ball.vecY *= ball.mul;
+			}
+		}
+
+		app.updateScore = function(ball, player1, player2){
+			if(ball.x < player1.x) {
+				this.getNode('score2').value++;
+				this.deleteNode(ball.id);
+			}
+			else if (ball.x > (player2.x + player2.width)) {
+				this.getNode('score1').value++;
+				this.deleteNode(ball.id);
+			}
+		}
+
 		app.onInit = function(){
 			this.setupScreen();
 
@@ -217,29 +240,16 @@
 			var player1 = this.getNode('player1');
 			var player2 = this.getNode('player2');
 
-			if ((ball.y - ball.radius) < 0 || (ball.y + ball.radius) > app.height) {
-				ball.vecY = - ball.vecY;
-			}
-			else if ( ((ball.x - ball.radius) <= (player1.x + player1.width) && ball.y >= player1.y && ball.y <= (player1.y + player1.height)) 
-					|| ((ball.x + ball.radius) >= player2.x && ball.y >= player2.y && ball.y <= (player2.y + player2.height)) ) {
-				ball.vecX = - ball.vecX;
-				ball.vecX *= ball.mul;
-				ball.vecY *= ball.mul;
-			}
+			if(ball != null) {
+				this.bounceBall(ball, player1, player2);
+				ball.x += ball.vecX;
+				ball.y += ball.vecY;
 
-			if(ball.x < 0) {
-				this.getNode('score2').value++;
-				this.deleteNode('ball');
-			}
-			else if (ball.x > app.width) {
-				this.getNode('score1').value++;
-				this.deleteNode('ball');
-			}
-			ball.x += ball.vecX;
-			ball.y += ball.vecY;
-			this.changeBallColor(this.timestamp);
-			this.changeBallSpeed(this.timestamp);
+				this.changeBallColor(this.timestamp);
+				this.changeBallSpeed(this.timestamp);
 
+				this.updateScore(ball, player1, player2);
+			}
 			player1.y += player1.speed;
 			player2.y += player2.speed;
 		};

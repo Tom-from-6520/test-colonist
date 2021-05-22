@@ -32,6 +32,7 @@
 
 			this.nodes.length = 0;
 			this.addPlayers();
+			this.addScores();
 		}
 
 		app.addPlayers = function(){
@@ -39,6 +40,7 @@
 				id : 'player1',
 				x  : 100,
 				y  : app.height/2,
+				shape  : 'rect',
 				width  : 15,
 				height : 100,
 				color  : 'red',
@@ -50,6 +52,7 @@
 				id : 'player2',
 				x  : (app.width-100),
 				y  : app.height/2,
+				shape  : 'rect',
 				width  : 15,
 				height : 100,
 				color  : 'blue',
@@ -99,14 +102,32 @@
 				id : 'ball',
 				x : app.width/2,
 				y : Math.random() * app.height,
-				width : 0,
-				height : 0,
+				shape : 'circ',
 				radius : 10,
 				color : 'black',
 				vecX : speed * Math.cos(angle),
 				vecY : speed * Math.sin(angle),
 				potX : 0,
 				potY : 0,
+			});
+		}
+
+		app.addScores = function(){
+			app.nodes.push({
+				id: 'score1',
+				x : app.width * 1/4,
+				y : 42,
+				shape: 'text',
+				font : "30px Arial",
+				value: 0
+			});
+			app.nodes.push({
+				id: 'score2',
+				x : app.width * 3/4,
+				y : 42,
+				shape: 'text',
+				font : "30px Arial",
+				value: 0
 			});
 		}
 
@@ -126,17 +147,6 @@
 			}
 		}
 
-		app.drawBall = function(){
-			var ctx = document.getElementById('canvas').getContext('2d');
-			var ball = this.getNode('ball');
-			ctx.beginPath();
-			ctx.arc(ball.x,ball.y,ball.radius,0,Math.PI*2);
-			ctx.fillStyle = ball.color;
-			ctx.fill();
-			ctx.strokeStyle = '#ffffff';
-			ctx.stroke();
-		}
-
 		app.deleteNode = function(id) {
 			for(var i = 0; i < this.nodes.length; i++) {
 				if(app.nodes[i].id === id) {
@@ -144,13 +154,6 @@
 					break;
 				}
 			}
-		}
-
-		app.showScore = function(){
-			var ctx = document.getElementById('canvas').getContext('2d');
-			ctx.font = "30px Arial";
-			ctx.fillText(parseFloat(this.getNode('player1').score), app.width/4, 42);
-			ctx.fillText(parseFloat(this.getNode('player2').score), app.width*3/4, 42);
 		}
 
 		app.reset = function(){
@@ -198,11 +201,11 @@
 			}
 
 			if(ball.x < 0) {
-				player2.score++;
+				this.getNode('score2').value++;
 				this.reset();
 			}
 			else if (ball.x > app.width) {
-				player1.score++;
+				this.getNode('score1').value++;
 				this.reset();
 			}
 			ball.x += ball.vecX;
@@ -210,9 +213,6 @@
 
 			player1.y += player1.speed;
 			player2.y += player2.speed;
-
-			this.drawBall();
-			this.showScore();
 		};
 	</script>
 </body>

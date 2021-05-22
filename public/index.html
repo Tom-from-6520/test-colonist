@@ -92,7 +92,7 @@
 		};
 
 		app.addBall = function(){
-			const speed = 7.30;
+			const speed = 8.21;
 			var angle = Math.PI/6 * (Math.random() + 1); // pi/6 <= angle <= pi/3
 
 			this.nodes.push({
@@ -154,24 +154,23 @@
 			}
 		};
 		
-		app.changeBallColor = function(time){
+		app.changeBallColor = function(time, ball){
 			const ball_color = ['purple', 'white', 'navy', 'white', 'green', 'white', 'lime', 'white', 'yellow', 'white', 'orange', 'white', 'red', 'white', 'chocolate'];
 			const pause = 218;
 			const duration = 218;
 			var t = Math.floor((time-pause)/duration);
-			if( (t % duration) > (duration - ball_color.length) ) {
-				this.getNode('ball').color = ball_color[t % ball_color.length];
+			if((t % duration) > (duration - ball_color.length)) {
+				ball.color = ball_color[t % ball_color.length];
 			}
 			else {
-				this.getNode('ball').color = 'black';
+				ball.color = 'black';
 			}
 		};
 
-		app.changeBallSpeed = function(time){
-			const ball = this.getNode('ball');
+		app.changeBallSpeed = function(time, ball){
 			const duration = 218;
 			var t = Math.floor(time/duration);
-			if( (t % duration) > duration/2 ) {
+			if((t % duration) > duration/2) {
 				ball.mul = 1.07;
 				ball.radius = 15;
 			}
@@ -225,8 +224,8 @@
 				ball.x += ball.vecX;
 				ball.y += ball.vecY;
 
-				this.changeBallColor(this.timestamp);
-				this.changeBallSpeed(this.timestamp);
+				this.changeBallColor(this.timestamp, ball);
+				this.changeBallSpeed(this.timestamp, ball);
 
 				this.updateScore(ball, player1, player2);
 			}

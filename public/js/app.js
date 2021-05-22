@@ -39,8 +39,20 @@ var app = {
 		for(var index in this.nodes){
 			var node = this.nodes[index];
 
-			this.context.fillStyle = node.color;
-			this.context.fillRect(node.x, node.y, node.width, node.height);
+			if(node.shape === 'rect') {
+				this.context.fillStyle = node.color;
+				this.context.fillRect(node.x, node.y, node.width, node.height);
+			}
+			else if(node.shape === 'circ') {
+				this.context.beginPath();
+				this.context.arc(node.x,node.y,node.radius,0,Math.PI*2);
+				this.context.fillStyle = node.color;
+				this.context.fill();
+			}
+			else if(node.shape === 'text'){
+				this.context.font = node.font;
+				this.context.fillText(parseFloat(node.value), node.x, node.y);
+			}
 		}
 
 		this.lastUpdate = Date.now();

@@ -18,8 +18,10 @@ This is a simple ping-pong game that covers the whole browser
 - Making the ball blink and change 
 
 ## Demos
-- The demo for normal game functionality: ```https://drive.google.com/file/d/1J-IpxR0RzDEpPkulyglXvcy3YrfXLtT-/view?usp=sharing```
-- The demo for effects of the ball (bouncing and blinking): ```https://drive.google.com/file/d/1KMvCl4T9AHdJwSoLCkc0IuHFV5KQIi_p/view?usp=sharing```
+- The demo for normal game functionality:
+```https://drive.google.com/file/d/1J-IpxR0RzDEpPkulyglXvcy3YrfXLtT-/view?usp=sharing```
+- The demo for effects of the ball (bouncing and blinking): 
+```https://drive.google.com/file/d/1KMvCl4T9AHdJwSoLCkc0IuHFV5KQIi_p/view?usp=sharing```
 
 ## Todo
 - [  ] Request reviews for the PR from `demiculus` & `goktugyil`

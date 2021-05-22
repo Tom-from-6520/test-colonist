@@ -21,17 +21,18 @@
 	<script type="text/javascript">
 		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
 
-		app.setupScreen = function(){
-			var canvas = document.getElementById('canvas');
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
-			app.width = canvas.width;
-			app.height = canvas.height;
+		app.hasNode = function(id){
+			return (app.getNode(id).x != null);
+		};
 
-			this.nodes.length = 0;
-			this.addPlayers();
-			this.addScores();
-		}
+		app.deleteNode = function(id) {
+			for(var i = 0; i < this.nodes.length; i++) {
+				if(app.nodes[i].id === id) {
+					app.nodes.splice(i);
+					break;
+				}
+			}
+		};
 
 		app.addPlayers = function(){
 			this.nodes.push({
@@ -88,7 +89,7 @@
 					player2.speed = 0;
 				}
 			});
-		}
+		};
 
 		app.addBall = function(){
 			const speed = 7.30;
@@ -107,7 +108,7 @@
 				potX : 0,
 				potY : 0,
 			});
-		}
+		};
 
 		app.addScores = function(){
 			app.nodes.push({
@@ -126,8 +127,32 @@
 				font : "30px Arial",
 				value: 0
 			});
-		}
+		};
 
+		app.setupScreen = function(){
+			var canvas = document.getElementById('canvas');
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			app.width = canvas.width;
+			app.height = canvas.height;
+
+			this.nodes.length = 0;
+			this.addPlayers();
+			this.addScores();
+		};
+		
+		app.bounceBall = function(ball, player1, player2){
+			if ((ball.y - ball.radius) < 0 || (ball.y + ball.radius) > app.height) {
+				ball.vecY = - ball.vecY;
+			}
+			else if ( ((ball.x - ball.radius) <= (player1.x + player1.width) && ball.y >= player1.y && ball.y <= (player1.y + player1.height)) 
+					|| ((ball.x + ball.radius) >= player2.x && ball.y >= player2.y && ball.y <= (player2.y + player2.height)) ) {
+				ball.vecX = - ball.vecX;
+				ball.vecX *= ball.mul;
+				ball.vecY *= ball.mul;
+			}
+		};
+		
 		app.changeBallColor = function(time){
 			const ball_color = ['purple', 'white', 'navy', 'white', 'green', 'white', 'lime', 'white', 'yellow', 'white', 'orange', 'white', 'red', 'white', 'chocolate'];
 			const pause = 218;
@@ -139,7 +164,7 @@
 			else {
 				this.getNode('ball').color = 'black';
 			}
-		}
+		};
 
 		app.changeBallSpeed = function(time){
 			const ball = this.getNode('ball');
@@ -154,53 +179,8 @@
 				ball.mul = 1;
 				ball.radius = 10;
 			}
-		}
-
-		app.pause = function(isPause) {
-			var ball = this.getNode('ball');
-			if(isPause) {
-				ball.vecX = ball.potX;
-				ball.vecY = ball.potY;
-				ball.potX = 0;
-				ball.potY = 0;
-			}
-			else {
-				ball.potX = ball.vecX;
-				ball.potY = ball.vecY;
-				ball.vecX = 0;
-				ball.vecY = 0;
-			}
-		}
-
-		app.deleteNode = function(id) {
-			for(var i = 0; i < this.nodes.length; i++) {
-				if(app.nodes[i].id === id) {
-					app.nodes.splice(i);
-					break;
-				}
-			}
-		}
-
-		app.reset = function(){
-			this.setupScreen();
-		}
-
-		app.hasNode = function(id){
-			return (app.getNode(id).x != null);
-		}
-
-		app.bounceBall = function(ball, player1, player2){
-			if ((ball.y - ball.radius) < 0 || (ball.y + ball.radius) > app.height) {
-				ball.vecY = - ball.vecY;
-			}
-			else if ( ((ball.x - ball.radius) <= (player1.x + player1.width) && ball.y >= player1.y && ball.y <= (player1.y + player1.height)) 
-					|| ((ball.x + ball.radius) >= player2.x && ball.y >= player2.y && ball.y <= (player2.y + player2.height)) ) {
-				ball.vecX = - ball.vecX;
-				ball.vecX *= ball.mul;
-				ball.vecY *= ball.mul;
-			}
-		}
-
+		};
+		
 		app.updateScore = function(ball, player1, player2){
 			if(ball.x < player1.x) {
 				this.getNode('score2').value++;
@@ -210,7 +190,7 @@
 				this.getNode('score1').value++;
 				this.deleteNode(ball.id);
 			}
-		}
+		};
 
 		app.onInit = function(){
 			this.setupScreen();
@@ -240,7 +220,7 @@
 			var player1 = this.getNode('player1');
 			var player2 = this.getNode('player2');
 
-			if(ball != null) {
+			if(ball.x != null) {
 				this.bounceBall(ball, player1, player2);
 				ball.x += ball.vecX;
 				ball.y += ball.vecY;
@@ -252,6 +232,26 @@
 			}
 			player1.y += player1.speed;
 			player2.y += player2.speed;
+		};
+
+		app.pause = function(isPause) {
+			var ball = this.getNode('ball');
+			if(isPause) {
+				ball.vecX = ball.potX;
+				ball.vecY = ball.potY;
+				ball.potX = 0;
+				ball.potY = 0;
+			}
+			else {
+				ball.potX = ball.vecX;
+				ball.potY = ball.vecY;
+				ball.vecX = 0;
+				ball.vecY = 0;
+			}
+		};
+
+		app.reset = function(){
+			this.setupScreen();
 		};
 	</script>
 </body>

@@ -21,8 +21,6 @@
 	<script type="text/javascript">
 		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
 
-		var ball_color = ['purple', 'navy', 'green', 'lime', 'yellow', 'orange', 'red', 'chocolate'];
-
 		app.resizeScreen = function(){
 			var canvas = document.getElementById('canvas');
 			canvas.width = window.innerWidth;
@@ -129,6 +127,18 @@
 			});
 		}
 
+		app.changeBallColor = function(time){
+			const ball_color = ['purple', 'white', 'navy', 'white', 'green', 'white', 'lime', 'white', 'yellow', 'white', 'orange', 'white', 'red', 'white', 'chocolate'];
+			var pauseTime = 218;
+			var t = Math.floor((time-pauseTime)/218);
+			if( (t % pauseTime) > (pauseTime - ball_color.length) ) {
+				this.getNode('ball').color = ball_color[t % ball_color.length];
+			}
+			else {
+				this.getNode('ball').color = 'black';
+			}
+		}
+
 		app.pause = function(isPause) {
 			var ball = this.getNode('ball');
 			if(isPause) {
@@ -208,6 +218,7 @@
 			}
 			ball.x += ball.vecX;
 			ball.y += ball.vecY;
+			this.changeBallColor(this.timestamp);
 
 			player1.y += player1.speed;
 			player2.y += player2.speed;

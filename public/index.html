@@ -129,9 +129,10 @@
 
 		app.changeBallColor = function(time){
 			const ball_color = ['purple', 'white', 'navy', 'white', 'green', 'white', 'lime', 'white', 'yellow', 'white', 'orange', 'white', 'red', 'white', 'chocolate'];
-			var pauseTime = 218;
-			var t = Math.floor((time-pauseTime)/218);
-			if( (t % pauseTime) > (pauseTime - ball_color.length) ) {
+			const pause = 218;
+			const duration = 218;
+			var t = Math.floor((time-pause)/duration);
+			if( (t % duration) > (duration - ball_color.length) ) {
 				this.getNode('ball').color = ball_color[t % ball_color.length];
 			}
 			else {

@@ -21,7 +21,7 @@
 	<script type="text/javascript">
 		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
 
-		app.resizeScreen = function(){
+		app.setupScreen = function(){
 			var canvas = document.getElementById('canvas');
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
@@ -165,7 +165,7 @@
 		}
 
 		app.reset = function(){
-			this.deleteNode('ball');
+			this.setupScreen();
 		}
 
 		app.hasNode = function(id){
@@ -173,10 +173,10 @@
 		}
 
 		app.onInit = function(){
-			this.resizeScreen();
+			this.setupScreen();
 
 			window.addEventListener('resize', () => {
-				this.resizeScreen();
+				this.setupScreen();
 			});
 
 			window.addEventListener('keydown', (event) => {
@@ -210,11 +210,11 @@
 
 			if(ball.x < 0) {
 				this.getNode('score2').value++;
-				this.reset();
+				this.deleteNode('ball');
 			}
 			else if (ball.x > app.width) {
 				this.getNode('score1').value++;
-				this.reset();
+				this.deleteNode('ball');
 			}
 			ball.x += ball.vecX;
 			ball.y += ball.vecY;
